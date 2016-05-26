@@ -32,20 +32,20 @@ from ModelTracker import Tracker
                 name=models.CharField(max_length=255)
                 address=models.CharField(max_length=255)
                 age=models.IntegerField()
-``` 
+ ``` 
      * New Code
 ```python
-            class Employee(Tracker.ModelTracker):
-                name=models.CharField(max_length=255)
-                address=models.CharField(max_length=255)
-                age=models.IntegerField()
+    class Employee(Tracker.ModelTracker):
+      name=models.CharField(max_length=255)
+      address=models.CharField(max_length=255)
+      age=models.IntegerField()
 ```
 * For each save() call, add the user the username
     * Old Code
-        ```python
-           emp=Employee()
-           emp.save()
-        ``` 
+ ```python
+    emp=Employee()
+    emp.save()
+ ``` 
      * New Code
         ```python
             emp=Employee()
