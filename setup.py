@@ -4,7 +4,7 @@ from distutils.core import setup
 #from setuptools import find_packages
 
 setup(name='DjangoModelTracker',
-      version='0.1',
+      version='0.2',
       description='Track Django Model Objects over time',
       author='Mohamed El-Kalioby',
       author_email='mkalioby@mkalioby.com',
