@@ -1,0 +1,42 @@
+<html>
+<head>
+    <link href="{{STATIC_URL}}css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+</head>
+<body>
+<div style="width:100%;background-color: cadetblue;padding-top: 0px;position: relative"><h4>ModelTracker</h4></div>
+<form action="." method="post">
+{% csrf_token %}
+<table>
+    <tr><td>Model:</td><td> <select id="table" name="table">
+    {% for model in models %}
+        <option value="{{ model }}">{{ model }}</option>
+    {% endfor %}
+</select>
+    </td></tr>
+
+<tr><td>ID: </td><td><input name="id" id="id" value="{{ id }}"/><br/></td></tr>
+<tr><td     colspan="2"><button type="submit">Get History</button></td></tr>
+</table>
+</form>
+{% if count > 0 %}
+{% for change in changes %}
+{% if change.changes|length > 0 %}
+    By: {{ change.by }} on: {{ change.datetime }}
+        <div id="" style="background-color: #f0f0f0">
+        <ul>
+        {% for row in change.changes %}
+            <li>{{ row }}</li>
+            {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endfor %}
+
+{% else %}
+    <div style="background-color: red">
+        No Changes found for {{ id }}.
+    </div>
+{% endif %}
+</body>
+</html>

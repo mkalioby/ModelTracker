@@ -25,13 +25,19 @@ SECRET_KEY = 'c(ri*s_b&7ogijq3$kp8l863kxhc9a=%$w4id00p+hx49dp%p('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+TEMPLATE_DEBUG = True
 
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.auth',
+    'django.contrib.staticfiles',
     'ModelTracker',
-    'TestApp',
-)
+    'debug_toolbar'
+    )
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -39,16 +45,21 @@ INSTALLED_APPS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ModelTrackerTest',
+        'NAME': 'Registry2',
         'USER': 'root',
         'PASSWORD': 'password',
         'HOST':'127.0.0.1', #127.0.0.1
         'port':'3306',
                 }
             }
+ROOT_URLCONF = 'ModelTracker.urls'
 
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+STATIC_URL='/static/'
