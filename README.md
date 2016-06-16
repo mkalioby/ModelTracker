@@ -2,7 +2,6 @@
 
 Track model object changes over time so that you know who done what.
  
-
 ## Installation
 
 * Install the package
@@ -16,6 +15,14 @@ INSTALLED_APPS = (
     'ModelTracker',
     )
 ```    
+* Add the following line to your urls.py
+```python
+urlpatterns = patterns('',
+...
+url(r'^track/', include(ModelTracker.urls)),
+...
+)
+```
 * Run Migrations
 ```sh
    python manage.py migrate ModelTracker 
