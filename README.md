@@ -30,10 +30,10 @@ from ModelTracker import Tracker
 **Old Code**
 
 ```python
-            class Employee(models.Model):
-                name=models.CharField(max_length=255)
-                address=models.CharField(max_length=255)
-                age=models.IntegerField()
+   class Employee(models.Model):
+     name=models.CharField(max_length=255)
+     address=models.CharField(max_length=255)
+     age=models.IntegerField()
  ``` 
   **New Code**
  
