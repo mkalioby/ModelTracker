@@ -26,15 +26,18 @@ INSTALLED_APPS = (
 from ModelTracker import Tracker
 ```
 *  Convert each Model you want to track to inhert from `Tracker.ModelTracker` instead of `models.Model`
-     * Old Code
+   
+**Old Code**
+
 ```python
             class Employee(models.Model):
                 name=models.CharField(max_length=255)
                 address=models.CharField(max_length=255)
                 age=models.IntegerField()
  ``` 
-     * New Code
-```python
+  **New Code**
+ 
+   ```python
     class Employee(Tracker.ModelTracker):
       name=models.CharField(max_length=255)
       address=models.CharField(max_length=255)
