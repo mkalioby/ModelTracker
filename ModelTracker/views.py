@@ -30,5 +30,5 @@ def main(request):
                     row["changes"].append("%s: %s ----> %s"%(key,change.old_state[key],change.new_state[key]))
             rows.append(row)
         count=len(rows)
-        res={"count":count,"changes":rows,"models":models,"id":id}
+        res={"count":count,"changes":rows,"models":models,"id":id,"selected_model":table}
         return render_to_response("main.html",res,context_instance = RequestContext(request))

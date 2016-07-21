@@ -7,17 +7,30 @@
 <div style=""><h4 style="font-weight: bold;">ModelTracker</h4></div>
 <form action="." method="post">
 {% csrf_token %}
-<table>
-    <tr><td>Model:</td><td> <select id="table" name="table">
+<div class="row">
+    <div class="col-md-2"><label>Model:</label></div>
+    <div class="col-md-4"><select id="table" name="table" class="form-control">
     {% for model in models %}
-        <option value="{{ model }}">{{ model }}</option>
+        <option value="{{ model }}"
+                {% if model == selected_model %}
+                selected
+                {% endif %}
+        >{{ model }}</option>
     {% endfor %}
 </select>
-    </td></tr>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2"><label>ID:</label></div>
+    <div class="col-md-4">
+        <input name="id" id="id" value="{{ id }}" class="form-control"/>
+        </div>
+    </div>
+<div class="row">
+    <div class="col-md-6" align="center">
+    <button type="submit" class="btn btn-primary">Get History</button></div></div>
 
-<tr><td>ID: </td><td><input name="id" id="id" value="{{ id }}"/><br/></td></tr>
-<tr><td     colspan="2"><button type="submit">Get History</button></td></tr>
-</table>
+
 </form>
 {% if count > 0 %}
 {% for change in changes %}
@@ -34,7 +47,7 @@
 {% endfor %}
 
 {% else %}
-    <div style="background-color: red">
+    <div class="alert alert-danger">
         No Changes found for {{ id }}.
     </div>
 {% endif %}
