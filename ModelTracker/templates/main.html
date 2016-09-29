@@ -35,11 +35,12 @@
 {% if count > 0 %}
 {% for change in changes %}
 {% if change.changes|length > 0 %}
-    By: {{ change.by }} on: {{ change.datetime }}
+    {% if change.name|length > 0 %} <span style="font-weight: bold;font-style: italic">({{ change.name }})</span>{% endif %}
+    By: {{ change.by }} on: {{ change.event_time }}
         <div id="" style="background-color: #f0f0f0">
         <ul>
         {% for row in change.changes %}
-            <li>{{ row }}</li>
+            <li>{{ row|safe }}</li>
             {% endfor %}
     </ul>
 </div>

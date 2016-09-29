@@ -2,6 +2,7 @@ from django.db import models
 from jsonfield import JSONField
 class History(models.Model):
     id=models.AutoField(primary_key=True)
+    name=models.CharField(max_length=255,default="")
     table=models.CharField(max_length=255)
     primary_key=models.CharField(max_length=255)
     old_state=JSONField(default={})
