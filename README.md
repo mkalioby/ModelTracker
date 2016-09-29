@@ -62,3 +62,11 @@ from ModelTracker import Tracker
         emp=Employee()
         emp.save(request.user.username)
  ```
+* Starting from version of 0.5, you can pass an name parameter to mark change as an event
+ 
+     * New Code
+ ```python
+        emp=Employee()
+        emp.save(request.user.username,name="Created the user")
+ ```
+
