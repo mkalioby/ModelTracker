@@ -6,7 +6,7 @@ class ModelTracker(models.Model):
     def __init__(self,*args,**kwargs):
         models.Model.__init__(self, *args, **kwargs)
         self.old_state = copy.deepcopy(self.__dict__)
-        print "Old State in constructor", self.old_state
+
 
 
     def save(self, username, event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
@@ -32,7 +32,6 @@ class ModelTracker(models.Model):
                     history.old_state[key]= history.old_state[key].pk
                 else:
                     keys2del.append(key)
-        print "Old State in save:", history.old_state
         for key in keys2del:
             del history.old_state[key]
         keys2del=[]
@@ -46,7 +45,6 @@ class ModelTracker(models.Model):
                     keys2del.append(key)
         for key in keys2del:
             del history.new_state[key]
-        print "New State in save:", history.new_state
         models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
         history.primary_key=self.pk
         history.new_state.pop("_state","")

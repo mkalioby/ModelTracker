@@ -50,10 +50,6 @@ def fetchChanges(id,table):
         row["changes"] = []
         row["name"]=change.name
         for key in change.old_state.keys():
-            if key == "extra_properties":
-                print change.old_state[key]
-                print change.new_state[key]
-
             if change.old_state[key] != change.new_state.get(key, None):
                 if type(change.old_state[key])in [type({}),type([])]:
                     text="%s: <br/>"%key
