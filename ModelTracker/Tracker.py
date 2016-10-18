@@ -1,5 +1,6 @@
 from django.db import models
-from models import *
+import sys
+from .models import *
 import copy
 from django.utils import timezone
 class ModelTracker(models.Model):
@@ -10,13 +11,17 @@ class ModelTracker(models.Model):
 
 
     def save(self, username, event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
-        types=[type("a"),type(1),type({}),type([]),type(("1",2)),type(True),type(1L),type(u"a"),type(1.1),type(None)]
+        types=[]
+        if sys.version_info > (3,):
+            long=int
+        types=[type("a"),type(1),type({}),type([]),type(("1",2)),type(True),type(long(1)),type(u"a"),type(1.1),type(None)]
         history = History()
         history.table = self._meta.db_table
         history.done_on = timezone.now()
         history.done_by = username
         history.name=event_name
-        history.new_state = copy.deepcopy(self.__dict__)
+        x=self.__dict__.copy()
+        history.new_state = copy.deepcopy(x)
         history.new_state.pop("old_state")
 
         if self.pk == None:

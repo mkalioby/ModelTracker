@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='History',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, db_column=b'id')),
+                ('id', models.AutoField(serialize=False, primary_key=True, db_column='id')),
                 ('table', models.CharField(max_length=255)),
                 ('primary_key', models.CharField(max_length=255)),
                 ('old_state', jsonfield.fields.JSONField(default={})),

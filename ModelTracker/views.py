@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from django.template import Context, RequestContext
 from django.core.context_processors import csrf
-from models import *
+from .models import *
 import simplejson
 def main(request):
     if request.method=="GET":
