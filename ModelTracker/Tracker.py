@@ -12,9 +12,12 @@ class ModelTracker(models.Model):
 
     def save(self, username, event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
         types=[]
+
         if sys.version_info > (3,):
-            long=int
-        types=[type("a"),type(1),type({}),type([]),type(("1",2)),type(True),type(long(1)),type(u"a"),type(1.1),type(None)]
+            lng=int
+        else:
+            lng=long
+        types=[type("a"),type(1),type({}),type([]),type(("1",2)),type(True),type(lng(1)),type(u"a"),type(1.1),type(None)]
         history = History()
         history.table = self._meta.db_table
         history.done_on = timezone.now()

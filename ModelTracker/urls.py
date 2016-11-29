@@ -1,5 +1,6 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
+from . import views
 
-urlpatterns = patterns('',
-    url('^$','ModelTracker.views.main',name="main"),
-                       )
+urlpatterns = [
+    url('^$',views.main,name="main"),
+                       ]
