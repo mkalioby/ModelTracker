@@ -50,15 +50,16 @@ def fetchChanges(id,table):
         row["changes"] = []
         row["name"]=change.name
         row["id"]=change.id
-        for key in change.old_state.keys():
-            if change.old_state[key] != change.new_state.get(key, None):
-                if type(change.old_state[key])in [type({}),type([])]:
-                    text="%s: <br/>"%key
-                    keyChanges=findChanges(change.old_state[key],change.new_state[key])
-                    text+=keyChanges
+        for key in change.new_state.keys():
+            if change.old_state.get(key, None) != change.new_state.get(key, None):
+                if type(change.old_state.get(key, None)) in [type({}), type([])]:
+                    text = "%s: <br/>" % key
+                    keyChanges = findChanges(change.old_state[key], change.new_state[key])
+                    text += keyChanges
                     row["changes"].append(mark_safe(text))
                 else:
-                    row["changes"].append("%s: %s ----> %s" % (key, change.old_state[key], change.new_state[key]))
+                    row["changes"].append(
+                        "%s: %s ----> %s" % (key, change.old_state.get(key, None), change.new_state[key]))
         rows.append(row)
     count = len(rows)
     res = {"count": count, "changes": rows, "id": id, "selected_model": table}
