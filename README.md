@@ -17,6 +17,7 @@ INSTALLED_APPS = (
 ```    
 * Add the following line to your urls.py
 ```python
+import ModelTracker
 urlpatterns = patterns('',
 ...
 url(r'^track/', include(ModelTracker.urls)),
