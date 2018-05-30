@@ -67,6 +67,6 @@ from ModelTracker import Tracker
      * New Code
  ```python
         emp=Employee()
-        emp.save(request.user.username,name="Created the user")
+        emp.save(request.user.username,event_name="Created the user")
  ```
 
