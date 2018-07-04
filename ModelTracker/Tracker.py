@@ -12,7 +12,9 @@ class ModelTracker(models.Model):
 
     def save(self, username, event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
         types=[]
-
+        if username==None:
+            models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
+            return 
         if sys.version_info > (3,):
             lng=int
         else:
