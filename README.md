@@ -71,3 +71,16 @@ from ModelTracker import Tracker
         emp.save(request.user.username,event_name="Created the user")
  ```
 
+Using The Middleware
+====================
+You can add `ModelTracker.middleware.ModelTrackerMiddleware` to your Middleware classes to get the username automatically from the request.
+
+```python
+INSTALLED_APPS = (
+     '....',
+    'ModelTracker.middleware.ModelTrackerMiddleware',
+    )
+```   
+
+**Note:** If you pass username as `None` then the change won't be saved.
+

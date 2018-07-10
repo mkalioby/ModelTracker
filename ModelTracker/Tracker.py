@@ -3,18 +3,22 @@ import sys
 from .models import *
 import copy
 from django.utils import timezone
+import threading
+
 class ModelTracker(models.Model):
+    thread = threading.local()
     def __init__(self,*args,**kwargs):
         models.Model.__init__(self, *args, **kwargs)
         self.old_state = copy.deepcopy(self.__dict__)
 
 
 
-    def save(self, username, event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, username='', event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
         types=[]
         if username==None:
             models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
-            return 
+            return
+        if username=='':  username= self.thread.request.user.username
         if sys.version_info > (3,):
             lng=int
         else:
