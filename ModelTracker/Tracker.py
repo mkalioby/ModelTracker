@@ -64,5 +64,35 @@ class ModelTracker(models.Model):
         history.new_state.pop("_state","")
         history.old_state.pop("_state","")
         history.save()
+
+    def delete(self, username='', event_name="", using=None, ):
+        types = []
+        if username == None:
+            models.Model.delete(self, using=using)
+            return
+        if username == '':  username = self.thread.request.user.username
+        if sys.version_info > (3,):
+            lng = int
+        else:
+            lng = long
+        types = [type("a"), type(1), type({}), type([]), type(("1", 2)), type(True), type(lng(1)), type(u"a"),
+                 type(1.1), type(None)]
+        history = History()
+        history.table = self._meta.db_table
+        history.done_on = timezone.now()
+        history.done_by = username
+        if event_name == '': event_name = "Delete"
+        history.name = event_name
+
+        history.old_state = self.old_state
+        history.new_state = self.old_state
+        history.primary_key = self.pk
+        history.new_state.pop("_state", "")
+        history.old_state.pop("_state", "")
+        history.save()
+        history.new_state.pop("_state", "")
+        history.old_state.pop("_state", "")
+        models.Model.delete(self, using=using)
+
     class Meta:
         abstract =True
