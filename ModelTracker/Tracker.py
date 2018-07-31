@@ -3,6 +3,7 @@ import sys
 from .models import *
 import copy
 from django.utils import timezone
+from django.contrib.admin.utils import NestedObjects
 import threading
 
 class ModelTracker(models.Model):
@@ -65,7 +66,11 @@ class ModelTracker(models.Model):
         history.old_state.pop("_state","")
         history.save()
 
+
     def delete(self, username='', event_name="", using=None, ):
+        def format(obj):
+            return "%s:%s" % (obj._meta.db_table, obj.pk)
+
         types = []
         if username == None:
             models.Model.delete(self, using=using)
@@ -85,10 +90,16 @@ class ModelTracker(models.Model):
         history.name = event_name
 
         history.old_state = self.old_state
-        history.new_state = self.old_state
         history.primary_key = self.pk
         history.new_state.pop("_state", "")
         history.old_state.pop("_state", "")
+        history.new_state={"related_records":[]}
+
+        collector = NestedObjects('default')
+        collector.collect([self])
+        x = collector.nested(format)
+        if len(x) > 1:
+            history.new_state["related_records"]=x[1]
         history.save()
         history.new_state.pop("_state", "")
         history.old_state.pop("_state", "")
