@@ -17,7 +17,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='DjangoModelTracker',
-    version='1.2.0',
+    version='1.3.0',
     description='Track Django Model Objects over time',
     author='Mohamed El-Kalioby',
     author_email = 'mkalioby@mkalioby.com',

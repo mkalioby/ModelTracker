@@ -5,6 +5,7 @@ import copy
 from django.utils import timezone
 from django.contrib.admin.utils import NestedObjects
 import threading
+import datetime
 
 class ModelTracker(models.Model):
     thread = threading.local()
@@ -40,22 +41,38 @@ class ModelTracker(models.Model):
             history.old_state=self.old_state
         keys2del=[]
         for key in history.old_state:
+            if key.startswith("_") and "_cache" in key:
+                keys2del.append(key)
+                continue
+
             if type(history.old_state[key]) not in types:
                 if hasattr(history.old_state[key],"toJSON"):
                     history.old_state[key]=history.old_state[key].toJSON()
                 elif hasattr(history.old_state[key],"pk"):
                     history.old_state[key]= history.old_state[key].pk
+                elif type(history.new_state[key])==type(datetime.datetime.now()):
+                    history.new_state[key]={"_type":"datetime","value":history.old_state[key].strftime("%Y-%m-%d %H:%M:%S")}
+                elif type(history.new_state[key])==type(datetime.datetime.now().date()):
+                    history.new_state[key]={"_type":"date","value":history.old_state[key].strftime("%Y-%m-%d")}
                 else:
                     keys2del.append(key)
         for key in keys2del:
             del history.old_state[key]
         keys2del=[]
         for key in history.new_state:
+            if key.startswith("_") and "_cache" in key:
+                keys2del.append(key)
+                continue
             if type(history.new_state[key]) not in types:
+
                 if hasattr(history.new_state[key], "toJSON"):
                     history.new_state[key] = history.new_state[key].toJSON()
                 elif hasattr(history.new_state[key], "pk"):
                     history.new_state[key] = history.new_state[key].pk
+                elif type(history.new_state[key])==type(datetime.datetime.now()):
+                    history.new_state[key]={"_type":"datetime","value":history.new_state[key].strftime("%Y-%m-%d %H:%M:%S")}
+                elif type(history.new_state[key])==type(datetime.datetime.now().date()):
+                    history.new_state[key]={"_type":"datetime","value":history.new_state[key].strftime("%Y-%m-%d")}
                 else:
                     keys2del.append(key)
         for key in keys2del:
