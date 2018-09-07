@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from django.template import Context, RequestContext
 from django.core.context_processors import csrf
+import datetime
 from .models import *
 import simplejson
 def main(request):
@@ -51,6 +52,11 @@ def fetchChanges(id,table):
         row["name"]=change.name
         row["id"]=change.id
         for key in change.new_state.keys():
+            if type(change.new_state[key]) ==type({}) and change.new_state[key].get("_type",None)!=None:
+                if change.new_state[key]["_type"]=="datetime":
+                    change.new_state=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M:%SZ")
+                elif change.new_state[key]["_type"]=="date":
+                    change.new_state=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d").date().strftime("%Y-%m-%d")
             if change.old_state.get(key, None) != change.new_state.get(key, None):
                 if type(change.old_state.get(key, None)) in [type({}), type([])]:
                     text = "%s: <br/>" % key
