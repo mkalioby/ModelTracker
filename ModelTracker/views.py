@@ -53,8 +53,12 @@ def fetchChanges(id,table):
         row["id"]=change.id
         for key in change.new_state.keys():
             if type(change.new_state[key]) ==type({}) and change.new_state[key].get("_type",None)!=None:
+
                 if change.new_state[key]["_type"]=="datetime":
-                    change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M:%SZ")
+                    try:
+                        change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M:%SZ")
+                    except ValueError as exp:
+                        change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d").strftime("%Y-%m-%d")
                 elif change.new_state[key]["_type"]=="date":
                     change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d").date().strftime("%Y-%m-%d")
             if change.old_state.get(key, None) != change.new_state.get(key, None):

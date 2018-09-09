@@ -9,4 +9,6 @@ class History(models.Model):
     new_state=JSONField(default={})
     done_by=models.CharField(max_length=255)
     done_on=models.DateTimeField(auto_now_add=True)
+    def __unicode__(self):
+        return self.id
 
