@@ -32,16 +32,16 @@ def findChanges(old_state,new_state):
         for key in old_state:
             if old_state[key]!=new_state.get(key,None):
                 if type(old_state[key]) in [type({}),type([])]:
-                    res+= "<li>"+findChanges(old_state[key],new_state[key])+"</li>"
+                    res+= "<li>"+findChanges(old_state.get(key,{}),new_state.get(key,{}))+"</li>"
                 else:
-                    res+="<li>%s:: %s ----> %s</li>"%(key,old_state[key],new_state[key])
+                    res+="<li>%s:: %s ----> %s</li>"%(key,old_state.get(key,None),new_state.get(key,None))
     elif type(old_state)==type([]):
         for key in range(len(old_state)):
             if old_state[key] != get(new_state,key,None):
                 if type(old_state[key]) in [type({}), type([])]:
                     res += findChanges(old_state[key], new_state[key])
                 else:
-                    res += "<li>%s:: %s ----> %s</li>" % (key, old_state[key], new_state[key])
+                    res += "<li>%s:: %s ----> %s</li>" % (key, old_state[key], get(new_state,key,None))
     return res+"</ul>"
 def fetchChanges(id,table):
     changes = History.objects.filter(primary_key=id, table=table).order_by("-id")
