@@ -23,7 +23,9 @@ def main(request):
         res=fetchChanges(id,table)
         res["models"]=models
         return render_to_response("main.html",res,context_instance = RequestContext(request))
-
+def get(lst,index,default):
+    if index<len(lst): return lst[index]
+    return default
 def findChanges(old_state,new_state):
     res="<ul>"
     if type(old_state)==type({}):
@@ -35,7 +37,7 @@ def findChanges(old_state,new_state):
                     res+="<li>%s:: %s ----> %s</li>"%(key,old_state[key],new_state[key])
     elif type(old_state)==type([]):
         for key in range(len(old_state)):
-            if old_state[key] != new_state[key]:
+            if old_state[key] != get(new_state,key,None):
                 if type(old_state[key]) in [type({}), type([])]:
                     res += findChanges(old_state[key], new_state[key])
                 else:
