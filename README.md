@@ -76,7 +76,7 @@ Using The Middleware
 You can add `ModelTracker.middleware.ModelTrackerMiddleware` to your Middleware classes to get the username automatically from the request.
 
 ```python
-INSTALLED_APPS = (
+MIDDLEWARE_CLASSES = (
      '....',
     'ModelTracker.middleware.ModelTrackerMiddleware',
     )
