@@ -20,7 +20,7 @@ INSTALLED_APPS = (
 import ModelTracker
 urlpatterns = patterns('',
 ...
-url(r'^track/', include(ModelTracker.urls)),
+url(r'^track/', include('ModelTracker.urls')),
 ...
 )
 ```
