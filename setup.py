@@ -22,6 +22,8 @@ setup(
     author='Mohamed El-Kalioby',
     author_email = 'mkalioby@mkalioby.com',
     url = 'https://github.com/mkalioby/ModelTracker/',
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
 
     download_url='https://github.com/mkalioby/ModelTracker/',
     license='MIT',
