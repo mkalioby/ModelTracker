@@ -1,1 +1,2 @@
 recursive-include ModelTracker/templates *
+recursive-include ModelTracker/static *

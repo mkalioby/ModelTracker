@@ -1,8 +1,10 @@
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.safestring import mark_safe
-from django.template import Context, RequestContext
-from django.core.context_processors import csrf
+try:
+    from django.core.context_processors import csrf
+except:
+    from django.template.context_processors import csrf
 import datetime
 from .models import *
 import simplejson
@@ -15,14 +17,14 @@ def main(request):
         res={"models": models}
         res.update(csrf(request))
 
-        return render_to_response("main.html",res,context_instance = RequestContext(request))
+        return render(request,"main.html",res)
     if request.method=="POST":
         id = request.POST["id"]
         table = request.POST["table"]
         models = request.session.get("models", None)
         res=fetchChanges(id,table)
         res["models"]=models
-        return render_to_response("main.html",res,context_instance = RequestContext(request))
+        return render(request,"main.html",res)
 def get(lst,index,default):
     if index<len(lst): return lst[index]
     return default

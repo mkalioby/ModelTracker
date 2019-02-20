@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.staticfiles',
     'ModelTracker',
-    'debug_toolbar'
+ #   'debug_toolbar'
     )
 
 # Database
@@ -44,12 +44,12 @@ INSTALLED_APPS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Registry2',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST':'127.0.0.1', #127.0.0.1
-        'port':'3306',
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'Registry2',
+#        'USER': 'root',
+#        'PASSWORD': 'password',
+#        'HOST':'127.0.0.1', #127.0.0.1
+#        'port':'3306',
                 }
             }
 ROOT_URLCONF = 'ModelTracker.urls'
@@ -61,5 +61,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ModelTracker.middleware.ModelTrackerMiddleware'
 )
 STATIC_URL='/static/'

@@ -6,7 +6,7 @@ Track model object changes over time so that you know who done what.
 
 * Install the package
 ```sh
-pip install DjangoModelTracker
+pip install django-model-tracker
 ```
 * Add Application to your project's INSTALLED_APPs
 ```python
