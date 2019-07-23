@@ -1,10 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.safestring import mark_safe
-try:
-    from django.core.context_processors import csrf
-except:
-    from django.template.context_processors import csrf
 import datetime
 from .models import *
 import simplejson
@@ -15,8 +11,6 @@ def main(request):
             models = [s['table'] for s in History.objects.values("table").distinct()]
             request.session["models"]=models
         res={"models": models}
-        res.update(csrf(request))
-
         return render(request,"main.html",res)
     if request.method=="POST":
         id = request.POST["id"]
@@ -41,7 +35,7 @@ def findChanges(old_state,new_state):
         for key in range(len(old_state)):
             if old_state[key] != get(new_state,key,None):
                 if type(old_state[key]) in [type({}), type([])]:
-                    res += findChanges(old_state[key], new_state[key])
+                    res += findChanges(old_state.get(key,[]), new_state.get(key,[]))
                 else:
                     res += "<li>%s:: %s ----> %s</li>" % (key, old_state[key], get(new_state,key,None))
     return res+"</ul>"
