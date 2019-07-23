@@ -28,14 +28,20 @@ def findChanges(old_state,new_state):
         for key in old_state:
             if old_state[key]!=new_state.get(key,None):
                 if type(old_state[key]) in [type({}),type([])]:
-                    res+= "<li>"+findChanges(old_state.get(key,{}),new_state.get(key,{}))+"</li>"
+                    try:
+                        res+= "<li>"+findChanges(old_state.get(key,{}),new_state.get(key,{}))+"</li>"
+                    except:
+                        pass
                 else:
                     res+="<li>%s:: %s ----> %s</li>"%(key,old_state.get(key,None),new_state.get(key,None))
     elif type(old_state)==type([]):
         for key in range(len(old_state)):
             if old_state[key] != get(new_state,key,None):
                 if type(old_state[key]) in [type({}), type([])]:
-                    res += findChanges(old_state.get(key,[]), new_state.get(key,[]))
+                    try:
+                        res += findChanges(old_state[key], new_state[key])
+                    except:
+                        pass
                 else:
                     res += "<li>%s:: %s ----> %s</li>" % (key, old_state[key], get(new_state,key,None))
     return res+"</ul>"
