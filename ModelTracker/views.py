@@ -84,3 +84,10 @@ def getChanges(request):
     table = request.GET["table"]
     res=fetchChanges(id,table)
     return HttpResponse(simplejson.dumps(res))
+
+def showChanges(request):
+    table = request.POST["table"]
+    primary_key = request.POST["id"]
+    res = fetchChanges(primary_key, table)
+    return render(request,"changes.html", res)
+
