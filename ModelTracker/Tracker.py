@@ -50,10 +50,12 @@ class ModelTracker(models.Model):
                     history.old_state[key]=history.old_state[key].toJSON()
                 elif hasattr(history.old_state[key],"pk"):
                     history.old_state[key]= history.old_state[key].pk
-                elif type(history.new_state[key])==type(datetime.datetime.now()):
-                    history.new_state[key]={"_type":"datetime","value":history.old_state[key].strftime("%Y-%m-%d %H:%M:%S")}
-                elif type(history.new_state[key])==type(datetime.datetime.now().date()):
-                    history.new_state[key]={"_type":"date","value":history.old_state[key].strftime("%Y-%m-%d")}
+                elif type(history.old_state[key])==type(datetime.datetime.now()):
+                    dt=history.old_state[key]
+                    history.old_state[key]={"_type":"datetime","value":"%s-%s-%s %s:%s:%s"%(dt.year,dt.month,dt.day,dt.hour,dt.minutes,dt.seconds)}
+                elif type(history.old_state[key])==type(datetime.datetime.now().date()):
+                    d=history.old_state[key]
+                    history.old_state[key]={"_type":"date","value":"%s-%s-%s"%(d.year,d.month,d.day)}
                 else:
                     keys2del.append(key)
         for key in keys2del:
@@ -64,15 +66,17 @@ class ModelTracker(models.Model):
                 keys2del.append(key)
                 continue
             if type(history.new_state[key]) not in types:
-
                 if hasattr(history.new_state[key], "toJSON"):
                     history.new_state[key] = history.new_state[key].toJSON()
                 elif hasattr(history.new_state[key], "pk"):
                     history.new_state[key] = history.new_state[key].pk
                 elif type(history.new_state[key])==type(datetime.datetime.now()):
-                    history.new_state[key]={"_type":"datetime","value":history.new_state[key].strftime("%Y-%m-%d %H:%M:%S")}
-                elif type(history.new_state[key])==type(datetime.datetime.now().date()):
-                    history.new_state[key]={"_type":"datetime","value":history.new_state[key].strftime("%Y-%m-%d")}
+                    dt = history.new_state[key]
+                    history.new_state[key] = {"_type": "datetime", "value": "%s-%s-%s %s:%s:%s" % (
+                    dt.year, dt.month, dt.day, dt.hour, dt.minutes, dt.seconds)}
+                elif type(history.new_state[key]) == type(datetime.datetime.now().date()):
+                    d = history.new_state[key]
+                    history.new_state[key] = {"_type": "date", "value": "%s-%s-%s" % (d.year, d.month, d.day)}
                 else:
                     keys2del.append(key)
         for key in keys2del:
