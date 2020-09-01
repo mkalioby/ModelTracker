@@ -1,6 +1,8 @@
 # Model Tracker
 
 Track model object changes over time so that you know who done what.
+
+[![PyPI version](https://badge.fury.io/py/django-model-tracker.svg)](https://badge.fury.io/py/django-model-tracker)
  
 ## Installation
 
@@ -71,8 +73,8 @@ from ModelTracker import Tracker
         emp.save(request.user.username,event_name="Created the user")
  ```
 
-Using The Middleware
-====================
+# Using The Middleware
+
 You can add `ModelTracker.middleware.ModelTrackerMiddleware` to your Middleware classes to get the username automatically from the request.
 
 ```python
@@ -84,3 +86,26 @@ MIDDLEWARE_CLASSES = (
 
 **Note:** If you pass username as `None` then the change won't be saved.
 
+# Showing Record History
+
+There are 3 ways to see the history of a record
+ 1. go to `ModelTracker` url and select `Table` and enter `id`.
+ 2. call `showModelChanges` by POST and send `csrftokenmiddleware` to return history as html.
+ 3. call `getModelChanges` which returns history as Json.
+
+# Django Admin
+
+There is 2 ways to update an object by django admin
+1. Handle save and delete in ModelAdmin as follows
+   ```python
+   def save_model(self, request, obj, form, change):
+        obj.save(request.user.username,"Editing From admin interface")
+
+   def delete_model(self, request, obj):
+        obj.delete(username=request.user.username, event_name="Deleting From admin interface")
+   ```
+2. Inhert from TrackerAdmin rather ModelAdmin
+   ```python
+   from ModelTracker.Tracker import TrackerAdmin 
+   admin.site.register(employee, TrackerAdmin)
+``` 

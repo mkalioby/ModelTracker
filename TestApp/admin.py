@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import employee
+from ModelTracker.Tracker import TrackerAdmin
 
-# Register your models here.
+admin.register(employee,TrackerAdmin)

@@ -4,6 +4,7 @@ from .models import *
 import copy
 from django.utils import timezone
 from django.contrib.admin.utils import NestedObjects
+from django.contrib.admin import ModelAdmin
 import threading
 import datetime
 
@@ -52,7 +53,7 @@ class ModelTracker(models.Model):
                     history.old_state[key]= history.old_state[key].pk
                 elif type(history.old_state[key])==type(datetime.datetime.now()):
                     dt=history.old_state[key]
-                    history.old_state[key]={"_type":"datetime","value":"%s-%s-%s %s:%s:%s"%(dt.year,dt.month,dt.day,dt.hour,dt.minutes,dt.seconds)}
+                    history.old_state[key]={"_type":"datetime","value":"%s-%s-%s %s:%s:%s"%(dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second)}
                 elif type(history.old_state[key])==type(datetime.datetime.now().date()):
                     d=history.old_state[key]
                     history.old_state[key]={"_type":"date","value":"%s-%s-%s"%(d.year,d.month,d.day)}
@@ -73,7 +74,7 @@ class ModelTracker(models.Model):
                 elif type(history.new_state[key])==type(datetime.datetime.now()):
                     dt = history.new_state[key]
                     history.new_state[key] = {"_type": "datetime", "value": "%s-%s-%s %s:%s:%s" % (
-                    dt.year, dt.month, dt.day, dt.hour, dt.minutes, dt.seconds)}
+                    dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)}
                 elif type(history.new_state[key]) == type(datetime.datetime.now().date()):
                     d = history.new_state[key]
                     history.new_state[key] = {"_type": "date", "value": "%s-%s-%s" % (d.year, d.month, d.day)}
@@ -128,3 +129,11 @@ class ModelTracker(models.Model):
 
     class Meta:
         abstract =True
+
+
+class TrackerAdmin(ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.save(request.user.username, "Editing From admin interface")
+
+    def delete_model(self, request, obj):
+        obj.delete(username = request.user.username, event_name = "Deleting From admin interface")
