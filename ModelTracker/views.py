@@ -26,10 +26,20 @@ def findChanges(old_state,new_state):
     res="<ul>"
     if type(old_state)==type({}):
         for key in old_state:
-            if old_state[key]!=new_state.get(key,None):
+            if key == "_type":
+                if old_state[key]=="datetime":
+                    if datetime.datetime.strptime(old_state["value"],"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M:%SZ") != new_state:
+                        res += "<li> %s ----> %s</li>" % (old_state.get("value"), new_state)
+                elif old_state[key]=="date":
+                    if datetime.datetime.strptime(old_state["value"],"%Y-%m-%d").strftime("%Y-%m-%d") != new_state:
+                        res += "<li> %s ----> %s</li>" % (old_state.get("value"), new_state)
+                break
+            elif old_state[key]!=new_state.get(key,None):
                 if type(old_state[key]) in [type({}),type([])]:
                     try:
-                        res+= "<li>"+findChanges(old_state.get(key,{}),new_state.get(key,{}))+"</li>"
+                        c = findChanges(old_state.get(key, {}), new_state.get(key, {}))
+                        if c!="<ul></ul>":
+                            res+= "<li>"+c+"</li>"
                     except:
                         pass
                 else:
@@ -67,10 +77,11 @@ def fetchChanges(id,table):
                     change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d").date().strftime("%Y-%m-%d")
             if change.old_state.get(key, None) != change.new_state.get(key, None):
                 if type(change.old_state.get(key, None)) in [type({}), type([])]:
-                    text = "%s: <br/>" % key
                     keyChanges = findChanges(change.old_state[key], change.new_state[key])
-                    text += keyChanges
-                    row["changes"].append(mark_safe(text))
+                    if keyChanges!="<ul></ul>":
+                        text = "%s: <br/>" % key
+                        text += keyChanges
+                        row["changes"].append(mark_safe(text))
                 else:
                     row["changes"].append(
                         "%s: %s ----> %s" % (key, change.old_state.get(key, None), change.new_state[key]))
