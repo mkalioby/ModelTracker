@@ -21,6 +21,11 @@ class ModelTracker(models.Model):
         if username==None:
             models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
             return
+        from inspect import currentframe, getframeinfo
+        frameinfo = getframeinfo(currentframe().f_back)
+        if "models.py" in frameinfo.filename:
+            frameinfo = getframeinfo(currentframe().f_back.f_back)
+
         if username=='':  username= self.thread.request.user.username
         if sys.version_info > (3,):
             lng=int
@@ -85,6 +90,7 @@ class ModelTracker(models.Model):
         models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
         history.primary_key=self.pk
         history.new_state.pop("_state","")
+        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename, frameinfo.lineno)
         history.old_state.pop("_state","")
         history.save()
 
