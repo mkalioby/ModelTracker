@@ -34,6 +34,8 @@ def findChanges(old_state,new_state):
                     if datetime.datetime.strptime(old_state["value"],"%Y-%m-%d").strftime("%Y-%m-%d") != new_state:
                         res += "<li> %s ----> %s</li>" % (old_state.get("value"), new_state)
                 break
+            elif new_state is None:
+                res += "<li> %s ----> NONE</li>" % (old_state.get(key))
             elif old_state[key]!=new_state.get(key,None):
                 if type(old_state[key]) in [type({}),type([])]:
                     try:
