@@ -95,7 +95,7 @@ class ModelTracker(models.Model):
         history.save()
 
 
-    def delete(self, username='', event_name="", using=None, ):
+    def delete(self, username='', event_name="", using=None):
         def format(obj):
             return "%s:%s" % (obj._meta.db_table, obj.pk)
 
@@ -116,8 +116,29 @@ class ModelTracker(models.Model):
         history.done_by = username
         if event_name == '': event_name = "Delete"
         history.name = event_name
-
         history.old_state = self.old_state
+        keys2del = []
+        for key in history.old_state:
+            if key.startswith("_") and "_cache" in key:
+                keys2del.append(key)
+                continue
+            if type(history.old_state[key]) not in types:
+                if hasattr(history.old_state[key], "toJSON"):
+                    history.old_state[key] = history.old_state[key].toJSON()
+                elif hasattr(history.old_state[key], "pk"):
+                    history.old_state[key] = history.old_state[key].pk
+                elif type(history.old_state[key]) == type(datetime.datetime.now()):
+                    dt = history.old_state[key]
+                    history.old_state[key] = {"_type": "datetime", "value": "%s-%s-%s %s:%s:%s" % (
+                    dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)}
+                elif type(history.old_state[key]) == type(datetime.datetime.now().date()):
+                    d = history.old_state[key]
+                    history.old_state[key] = {"_type": "date", "value": "%s-%s-%s" % (d.year, d.month, d.day)}
+                else:
+                    keys2del.append(key)
+        for key in keys2del:
+            del history.old_state[key]
+
         history.primary_key = self.pk
         history.new_state.pop("_state", "")
         history.old_state.pop("_state", "")
