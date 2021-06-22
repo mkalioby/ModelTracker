@@ -104,6 +104,10 @@ class ModelTracker(models.Model):
             models.Model.delete(self, using=using)
             return
         if username == '':  username = self.thread.request.user.username
+        from inspect import currentframe, getframeinfo
+        frameinfo = getframeinfo(currentframe().f_back)
+        if "models.py" in frameinfo.filename:
+            frameinfo = getframeinfo(currentframe().f_back.f_back)
         if sys.version_info > (3,):
             lng = int
         else:
@@ -143,7 +147,7 @@ class ModelTracker(models.Model):
         history.new_state.pop("_state", "")
         history.old_state.pop("_state", "")
         history.new_state={"related_records":[]}
-
+        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename, frameinfo.lineno)
         collector = NestedObjects('default')
         collector.collect([self])
         x = collector.nested(format)
