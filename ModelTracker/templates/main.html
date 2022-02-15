@@ -50,6 +50,7 @@
     {% if change.name|length > 0 %} <span style="font-weight: bold;font-style: italic" title="{{ change.id }}">({{ change.name }})</span>{% endif %}
     <span title="{{ change.id }}"> By: {{ change.by }} on: {{ change.event_time }}</span>
        <input type="text" value="{{ change.id }}" maxlength="9" readonly style="display:none;width: 85px" id="text_{{ change.id }}"><a href="javascript:void(0)" onclick="copy({{ change.id }})" >Copy ID!</a>
+       <a href="{% url 'revert' change.id %}">Revert to this!</a>
         <div id="" style="background-color: #f0f0f0">
         {% if change.changes|length > 0 %}
             <ul>

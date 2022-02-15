@@ -142,3 +142,11 @@ def showChanges(request):
     res = fetchChanges(primary_key, table)
     return render(request,"changes.html", res)
 
+
+
+def revert(request,id=None):
+    from django.core import management
+    if id is None:
+        id =request.GET["id"]
+    management.call_command('restoreObject',id=id,user=request.user.username)
+    return HttpResponse("Done, Please Go <a href='javascript:void(0)' onclick='history.back()'>Back</a> and refresh")

@@ -12,6 +12,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--id', nargs='?', type=str,default=None)
         parser.add_argument("--state",type=str,nargs='?',default="new")
+        parser.add_argument("--user",type=str,nargs='?',default="CLI")
     def handle(self, *args, **options):
         if not options.get("id",None):
             print ("Change ID is needed")
@@ -39,7 +40,7 @@ class Command(BaseCommand):
 
         print(state)
         m=model(**state)
-        m.save("CLI",event_name="Restore Record to %s (%s)"%(options["id"],options["state"]))
+        m.save(options["user"],event_name="Restore Record to %s (%s)"%(options["id"],options["state"]))
 
 
 
