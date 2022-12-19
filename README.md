@@ -1,15 +1,22 @@
-# Model Tracker
+# django-model-tracker
 
 Track model object changes over time so that you know who done what.
 
 [![PyPI version](https://badge.fury.io/py/django-model-tracker.svg)](https://badge.fury.io/py/django-model-tracker)
+[![Downloads](https://pepy.tech/badge/django-model-tracker)](https://pepy.tech/project/django-model-tracker)
  
 ## Installation
 
 * Install the package
-```sh
-pip install django-model-tracker
-```
+    * For Django<4.0
+       ```sh
+        pip install 'django-model-tracker jsonfield'
+      ```
+    * For Django>=4.0
+      ```sh
+       pip install 'django-model-tracker'
+      ```
+
 * Add Application to your project's INSTALLED_APPs
 ```python
 INSTALLED_APPS = (
