@@ -120,8 +120,7 @@ There is 2 ways to update an object by django admin
    def delete_model(self, request, obj):
         obj.delete(username=request.user.username, event_name="Deleting From admin interface")
    ```
-2. Inhert from TrackerAdmin rather ModelAdmin
+2. Inherit from TrackerAdmin rather ModelAdmin
    ```python
    from ModelTracker.Tracker import TrackerAdmin 
    admin.site.register(employee, TrackerAdmin)
-``` 
