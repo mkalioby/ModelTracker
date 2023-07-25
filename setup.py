@@ -17,7 +17,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='django-model-tracker',
-    version='2.0.3',
+    version='2.0.4',
     description='Track Django Model Objects over time',
     author='Mohamed El-Kalioby',
     author_email = 'mkalioby@mkalioby.com',
@@ -37,6 +37,7 @@ setup(
         python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
+        #"Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Django",
         "Framework :: Django :: 1.7",
