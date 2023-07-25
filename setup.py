@@ -33,8 +33,8 @@ setup(
         'simplejson'
       ],
     include_package_data=True,
-      zip_safe=False, # because we're including static files
-        python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
+    zip_safe=False, # because we're including static files
+    python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         #"Development Status :: 4 - Beta",

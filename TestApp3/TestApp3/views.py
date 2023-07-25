@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from TestApp.models import employee
+from .models import employee
 from django.http import HttpResponse
 
 @login_required
