@@ -7,7 +7,8 @@ Track model object changes over time so that you know who done what.
  
 ## Installation
 
-* Install the package
+1. Install the package
+
     * For Django<4.0
        ```sh
         pip install 'django-model-tracker jsonfield'
@@ -17,14 +18,14 @@ Track model object changes over time so that you know who done what.
        pip install 'django-model-tracker'
       ```
 
-* Add Application to your project's INSTALLED_APPs
+2. Add Application to your project's INSTALLED_APPs
 ```python
 INSTALLED_APPS = (
      '....',
     'ModelTracker',
     )
 ```    
-* Add the following line to your urls.py
+3. Add the following line to your urls.py
 ```python
 import ModelTracker
 urlpatterns = patterns('',
@@ -33,51 +34,59 @@ url(r'^track/', include('ModelTracker.urls')),
 ...
 )
 ```
-* Run Migrations
+* Note: For Django >=3.1 use ```re_path```
+```python
+import ModelTracker
+urlpatterns = patterns('',
+...
+re_path(r'^track/', include('ModelTracker.urls')),
+...
+)
+```
+
+4. Run Migrations
 ```sh
    python manage.py migrate ModelTracker 
 ```
 
-* Add the following line to your models.py file
+5. Add the following line to your models.py file
 ```python
 from ModelTracker import Tracker
 ```
-*  Convert each Model you want to track to inhert from `Tracker.ModelTracker` instead of `models.Model`
+6.  Convert each Model you want to track to inhert from `Tracker.ModelTracker` instead of `models.Model`
    
-**Old Code**
+**Before**
 
 ```python
    class Employee(models.Model):
      name=models.CharField(max_length=255)
      address=models.CharField(max_length=255)
      age=models.IntegerField()
- ``` 
-  **New Code**
- 
-   ```python
+```
+***After***
+```python
     class Employee(Tracker.ModelTracker):
       name=models.CharField(max_length=255)
       address=models.CharField(max_length=255)
       age=models.IntegerField()
 ```
-* For each save() call, add the user the username
-    * Old Code
+* For each ```save()``` call, add the username:
+
+***Before***
  ```python
-    emp=Employee()
-    emp.save()
+emp=Employee()
+emp.save()
  ``` 
- 
-     * New Code
+***After***
  ```python
-        emp=Employee()
-        emp.save(request.user.username)
+emp=Employee()
+emp.save(request.user.username)
  ```
-* Starting from version of 0.5, you can pass a event_name parameter to mark change as an event
+* Starting from version of 0.5, you can pass a event_name parameter to mark change as an event:
  
-     * New Code
  ```python
-        emp=Employee()
-        emp.save(request.user.username,event_name="Created the user")
+emp=Employee()
+emp.save(request.user.username,event_name="Created the user")
  ```
 
 # Using The Middleware
@@ -111,8 +120,7 @@ There is 2 ways to update an object by django admin
    def delete_model(self, request, obj):
         obj.delete(username=request.user.username, event_name="Deleting From admin interface")
    ```
-2. Inhert from TrackerAdmin rather ModelAdmin
+2. Inherit from TrackerAdmin rather ModelAdmin
    ```python
    from ModelTracker.Tracker import TrackerAdmin 
    admin.site.register(employee, TrackerAdmin)
-``` 
