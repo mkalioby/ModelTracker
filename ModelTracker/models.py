@@ -14,11 +14,18 @@ class History(models.Model):
     name=models.CharField(max_length=255,default="")
     table=models.CharField(max_length=255)
     primary_key=models.CharField(max_length=255)
-    old_state=JSONField(default=dict)
+    # old_state=JSONField(default=dict)
     new_state=JSONField(default=dict)
     done_by=models.CharField(max_length=255)
     done_on=models.DateTimeField(auto_now_add=True)
 
+    def __eq__(self, other):
+        return self.id == other.id
+    def __str__(self):
+        if self.name:
+            return "%s for %s in %s"%(self.name, self.primary_key, self.table)
+        return "%s in %s"%(self.primary_key, self.table)
+
     def __unicode__(self):
-        return self.id
+        return self.__str__()
 

@@ -10,10 +10,18 @@ import datetime
 
 class ModelTracker(models.Model):
     thread = threading.local()
+
     def __init__(self,*args,**kwargs):
         models.Model.__init__(self, *args, **kwargs)
-        self.old_state = copy.deepcopy(self.__dict__)
+        #self.old_state = copy.deepcopy(self.__dict__)
 
+
+    def get_history(self,reverse=True):
+        """Returns queryset"""
+        q = History.objects.filter(table=self._meta.db_table, primary_key = self.pk)
+        if reverse:
+            q=q.order_by("-id")
+        return q
 
 
     def save(self, username='', event_name="",force_insert=False, force_update=False, using=None, update_fields=None):
@@ -39,33 +47,33 @@ class ModelTracker(models.Model):
         history.name=event_name
         x=self.__dict__.copy()
         history.new_state = copy.deepcopy(x)
-        history.new_state.pop("old_state")
+        history.new_state.pop("old_state",None)
 
-        if self.pk == None:
-            history.old_state = {}
-        else:
-            history.old_state=self.old_state
-        keys2del=[]
-        for key in history.old_state:
-            if key.startswith("_") and "_cache" in key:
-                keys2del.append(key)
-                continue
-
-            if type(history.old_state[key]) not in types:
-                if hasattr(history.old_state[key],"toJSON"):
-                    history.old_state[key]=history.old_state[key].toJSON()
-                elif hasattr(history.old_state[key],"pk"):
-                    history.old_state[key]= history.old_state[key].pk
-                elif type(history.old_state[key])==type(datetime.datetime.now()):
-                    dt=history.old_state[key]
-                    history.old_state[key]={"_type":"datetime","value":"%s-%s-%s %s:%s:%s"%(dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second)}
-                elif type(history.old_state[key])==type(datetime.datetime.now().date()):
-                    d=history.old_state[key]
-                    history.old_state[key]={"_type":"date","value":"%s-%s-%s"%(d.year,d.month,d.day)}
-                else:
-                    keys2del.append(key)
-        for key in keys2del:
-            del history.old_state[key]
+        # if self.pk == None:
+        #     history.old_state = {}
+        # else:
+        #     history.old_state=self.old_state
+        # keys2del=[]
+        # for key in history.new_state:
+        #     if key.startswith("_") and "_cache" in key:
+        #         keys2del.append(key)
+        #         continue
+        #
+        #     if type(history.old_state[key]) not in types:
+        #         if hasattr(history.old_state[key],"toJSON"):
+        #             history.old_state[key]=history.old_state[key].toJSON()
+        #         elif hasattr(history.old_state[key],"pk"):
+        #             history.old_state[key]= history.old_state[key].pk
+        #         elif type(history.old_state[key])==type(datetime.datetime.now()):
+        #             dt=history.old_state[key]
+        #             history.old_state[key]={"_type":"datetime","value":"%s-%s-%s %s:%s:%s"%(dt.year,dt.month,dt.day,dt.hour,dt.minute,dt.second)}
+        #         elif type(history.old_state[key])==type(datetime.datetime.now().date()):
+        #             d=history.old_state[key]
+        #             history.old_state[key]={"_type":"date","value":"%s-%s-%s"%(d.year,d.month,d.day)}
+        #         else:
+        #             keys2del.append(key)
+        # for key in keys2del:
+        #     del history.old_state[key]
         keys2del=[]
         for key in history.new_state:
             if key.startswith("_") and "_cache" in key:
@@ -90,7 +98,7 @@ class ModelTracker(models.Model):
         models.Model.save(self,force_insert=force_insert,force_update=force_update,using=using,update_fields=update_fields)
         history.primary_key=self.pk
         history.new_state.pop("_state","")
-        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename, frameinfo.lineno)
+        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename.replace(settings.BASE_DIR,'./'), frameinfo.lineno)
         history.old_state.pop("_state","")
         history.save()
 
@@ -120,34 +128,34 @@ class ModelTracker(models.Model):
         history.done_by = username
         if event_name == '': event_name = "Delete"
         history.name = event_name
-        history.old_state = self.old_state
-        keys2del = []
-        for key in history.old_state:
-            if key.startswith("_") and "_cache" in key:
-                keys2del.append(key)
-                continue
-            if type(history.old_state[key]) not in types:
-                if hasattr(history.old_state[key], "toJSON"):
-                    history.old_state[key] = history.old_state[key].toJSON()
-                elif hasattr(history.old_state[key], "pk"):
-                    history.old_state[key] = history.old_state[key].pk
-                elif type(history.old_state[key]) == type(datetime.datetime.now()):
-                    dt = history.old_state[key]
-                    history.old_state[key] = {"_type": "datetime", "value": "%s-%s-%s %s:%s:%s" % (
-                    dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)}
-                elif type(history.old_state[key]) == type(datetime.datetime.now().date()):
-                    d = history.old_state[key]
-                    history.old_state[key] = {"_type": "date", "value": "%s-%s-%s" % (d.year, d.month, d.day)}
-                else:
-                    keys2del.append(key)
-        for key in keys2del:
-            del history.old_state[key]
+        # history.old_state = self.old_state
+        # keys2del = []
+        # for key in history.old_state:
+        #     if key.startswith("_") and "_cache" in key:
+        #         keys2del.append(key)
+        #         continue
+        #     if type(history.old_state[key]) not in types:
+        #         if hasattr(history.old_state[key], "toJSON"):
+        #             history.old_state[key] = history.old_state[key].toJSON()
+        #         elif hasattr(history.old_state[key], "pk"):
+        #             history.old_state[key] = history.old_state[key].pk
+        #         elif type(history.old_state[key]) == type(datetime.datetime.now()):
+        #             dt = history.old_state[key]
+        #             history.old_state[key] = {"_type": "datetime", "value": "%s-%s-%s %s:%s:%s" % (
+        #             dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)}
+        #         elif type(history.old_state[key]) == type(datetime.datetime.now().date()):
+        #             d = history.old_state[key]
+        #             history.old_state[key] = {"_type": "date", "value": "%s-%s-%s" % (d.year, d.month, d.day)}
+        #         else:
+        #             keys2del.append(key)
+        # for key in keys2del:
+        #     del history.old_state[key]
 
         history.primary_key = self.pk
         history.new_state.pop("_state", "")
-        history.old_state.pop("_state", "")
+        # history.old_state.pop("_state", "")
         history.new_state={"related_records":[]}
-        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename, frameinfo.lineno)
+        history.new_state["__called_through"] = "%s %s" % (frameinfo.filename.replace(settings.BASE_DIR,'./'), frameinfo.lineno)
         collector = NestedObjects('default')
         collector.collect([self])
         x = collector.nested(format)
@@ -163,6 +171,14 @@ class ModelTracker(models.Model):
 
 
 class TrackerAdmin(ModelAdmin):
+    change_form_template = "tracked_change_list.html"
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['model'] = self.model._meta.db_table
+        return super(TrackerAdmin, self).change_view(
+            request, object_id, form_url, extra_context = extra_context,
+        )
     def save_model(self, request, obj, form, change):
         obj.save(request.user.username, "Editing From admin interface")
 

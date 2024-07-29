@@ -5,20 +5,21 @@ import datetime
 from .models import *
 import simplejson
 def main(request):
-    if request.method=="GET":
-        models=request.session.get("models",None)
-        if not models:
-            models = [s['table'] for s in History.objects.values("table").distinct()]
-            request.session["models"]=models
-        res={"models": models}
-        return render(request,"main.html",res)
-    if request.method=="POST":
-        id = request.POST["id"]
-        table = request.POST["table"]
+
+    if request.method=="POST" or (request.GET.get("id") and request.GET.get('table')):
+        pk = request.POST.get("id") or request.GET.get("id")
+        table = request.POST.get("table") or request.GET.get("table")
         models = request.session.get("models", None)
-        res=fetchChanges(id,table)
+        res=fetchChanges(pk,table)
         res["models"]=models
         return render(request,"main.html",res)
+    else:
+        models = request.session.get("models", None)
+        if not models:
+            models = [s['table'] for s in History.objects.values("table").distinct()]
+            request.session["models"] = models
+        res = {"models": models}
+        return render(request, "main.html", res)
 def get(lst,index,default):
     if index<len(lst): return lst[index]
     return default
@@ -96,9 +97,13 @@ def findChanges(old_state,new_state):
 
 
 def fetchChanges(id,table):
-    changes = History.objects.filter(primary_key=id, table=table).order_by("-id")
+    changes = list(History.objects.filter(primary_key=id, table=table).order_by("-id"))
     rows = []
-    for change in changes:
+    for i,change in enumerate(changes):
+        if change == changes[-1]:
+            change.old_state = {}
+        else:
+            change.old_state = changes[i+1].new_state
         row = {}
         row["event_time"] = change.done_on
         row["by"] = change.done_by
@@ -107,7 +112,6 @@ def fetchChanges(id,table):
         row["id"]=change.id
         for key in change.new_state.keys():
             if type(change.new_state[key]) ==type({}) and change.new_state[key].get("_type",None)!=None:
-
                 if change.new_state[key]["_type"]=="datetime":
                     try:
                         change.new_state[key]=datetime.datetime.strptime(change.new_state[key]["value"],"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M:%SZ")

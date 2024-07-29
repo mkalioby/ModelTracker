@@ -4,6 +4,8 @@ except ModuleNotFoundError:
     from django.conf.urls import re_path
 from . import views
 
+app_name = 'tracker'
+
 urlpatterns = [
     re_path('^$',views.main,name="main"),
     re_path('show/',views.showChanges,name="showModelChanges"),
