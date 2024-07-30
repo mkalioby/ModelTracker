@@ -144,6 +144,7 @@ def showChanges(request):
     table = request.POST["table"]
     primary_key = request.POST["id"]
     res = fetchChanges(primary_key, table)
+    res["revert"] = request.POST.get("revert",0)
     return render(request,"changes.html", res)
 
 

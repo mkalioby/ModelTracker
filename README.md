@@ -96,14 +96,19 @@ MIDDLEWARE_CLASSES = (
 # Showing Record History
 
 There are 3 ways to see the history of a record
- 1. go to `ModelTracker` url and select `Table` and enter `id`.
- 2. call `showModelChanges` by POST and send `csrftokenmiddleware` to return history as html.
- 3. call `getModelChanges` which returns history as Json.
+ 1. go to `tracker:main` url and select `Table` and enter `id`.
+ 2. call `tracker:showModelChanges` by POST passing `id`,`table` and optional `revert` to show revert link and send `csrftokenmiddleware` to return history as html.
+ 3. call `tracker:getModelChanges` which returns history as Json.
 
 # Django Admin
 
 There is 2 ways to update an object by django admin
-1. Handle save and delete in ModelAdmin as follows
+1. Inhert from TrackerAdmin rather ModelAdmin. Recommended to show changes button.
+   ```python
+   from ModelTracker.Tracker import TrackerAdmin 
+   admin.site.register(employee, TrackerAdmin)
+   ``` 
+2. Handle save and delete in ModelAdmin as follows
    ```python
    def save_model(self, request, obj, form, change):
         obj.save(request.user.username,"Editing From admin interface")
@@ -111,8 +116,3 @@ There is 2 ways to update an object by django admin
    def delete_model(self, request, obj):
         obj.delete(username=request.user.username, event_name="Deleting From admin interface")
    ```
-2. Inhert from TrackerAdmin rather ModelAdmin
-   ```python
-   from ModelTracker.Tracker import TrackerAdmin 
-   admin.site.register(employee, TrackerAdmin)
-``` 
