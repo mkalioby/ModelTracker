@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from django.db import models
 import sys
 from .models import *
@@ -8,13 +10,13 @@ from django.contrib.admin import ModelAdmin
 import threading
 import datetime
 
+
 class ModelTracker(models.Model):
     thread = threading.local()
 
     def __init__(self,*args,**kwargs):
         models.Model.__init__(self, *args, **kwargs)
         #self.old_state = copy.deepcopy(self.__dict__)
-
 
     def get_history(self,reverse=True):
         """Returns queryset"""
